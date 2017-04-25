@@ -15,21 +15,14 @@ class RestClient(object):
     def request(self, action, data):
         response = None
 
-        # older versions have problems with SNI
-        if sys.version >= (2, 7, 9):
-            verify = True
-        else:
-            verify = False
-
         if action.startswith("/api/v1/private/"):
             if self.key is None or self.secret is None:
                 raise Exception("Key or secret empty")
 
             signature = self.generate_signature(action, data)
-            print data
-            response = requests.post(self.url + action, data=data, headers={'x-deribit-sig': signature}, verify=verify)
+            response = requests.post(self.url + action, data=data, headers={'x-deribit-sig': signature}, verify=True)
         else:
-            response = requests.get(self.url + action, params=data, verify=verify)
+            response = requests.get(self.url + action, params=data, verify=True)
         
         if response.status_code != 200:
             raise Exception("Wrong response code: " + response.status_code)
