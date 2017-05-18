@@ -7,6 +7,8 @@ class RestClient(object):
     def __init__(self, key=None, secret=None, url=None):
         self.key = key
         self.secret = secret
+        self.session = requests.Session()
+
         if url:
             self.url = url
         else:
@@ -20,9 +22,9 @@ class RestClient(object):
                 raise Exception("Key or secret empty")
 
             signature = self.generate_signature(action, data)
-            response = requests.post(self.url + action, data=data, headers={'x-deribit-sig': signature}, verify=True)
+            response = self.session.post(self.url + action, data=data, headers={'x-deribit-sig': signature}, verify=True)
         else:
-            response = requests.get(self.url + action, params=data, verify=True)
+            response = self.session.get(self.url + action, params=data, verify=True)
         
         if response.status_code != 200:
             raise Exception("Wrong response code: " + response.status_code)
