@@ -27,7 +27,7 @@ class RestClient(object):
             response = self.session.get(self.url + action, params=data, verify=True)
         
         if response.status_code != 200:
-            raise Exception("Wrong response code: " + response.status_code)
+            raise Exception("Wrong response code: {0}".format(response.status_code))
 
         json = response.json()
 
